@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Input, Button, Flex } from '../styles/StyledComponents';
+import { Input, Button } from '../styles/StyledComponents';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
