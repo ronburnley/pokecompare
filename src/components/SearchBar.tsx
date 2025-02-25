@@ -12,14 +12,22 @@ const SearchContainer = styled.div`
   width: 100%;
 `;
 
+const SearchWrapper = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
 const SearchInput = styled(Input)`
   border-radius: 8px 0 0 8px;
   border-right: none;
+  flex: 1;
 `;
 
 const SearchButton = styled(Button)`
   border-radius: 0 8px 8px 0;
-  height: 100%;
+  white-space: nowrap;
+  padding: 12px 24px;
+  margin-left: -1px; /* Fix potential double border */
 `;
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
@@ -37,8 +45,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <SearchContainer>
-      <form onSubmit={handleSubmit}>
-        <Flex>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <SearchWrapper>
           <SearchInput
             type="text"
             value={query}
@@ -46,7 +54,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             placeholder={placeholder}
           />
           <SearchButton type="submit">Search</SearchButton>
-        </Flex>
+        </SearchWrapper>
       </form>
     </SearchContainer>
   );
