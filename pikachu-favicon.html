@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pikachu Favicon Creator</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    canvas { border: 1px solid #ccc; margin: 10px 0; }
+    button { padding: 8px 16px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Pikachu Favicon Creator</h1>
+  <p>This page creates a proper favicon.ico file from a Pikachu image.</p>
+  
+  <div>
+    <p>Pikachu Image Preview:</p>
+    <canvas id="previewCanvas" width="64" height="64"></canvas>
+  </div>
+  
+  <button id="downloadBtn">Download Pikachu Favicon</button>
+  
+  <script>
+    // Create and draw the Pikachu face on the canvas
+    const canvas = document.getElementById('previewCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Draw Pikachu's face
+    function drawPikachu() {
+      // Yellow background for Pikachu
+      ctx.fillStyle = '#FFDE00';
+      ctx.fillRect(0, 0, 64, 64);
+      
+      // Black outline of face
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(32, 32, 30, 30, 0, 0, 2 * Math.PI);
+      ctx.stroke();
+      
+      // Fill in yellow
+      ctx.fillStyle = '#FFDE00';
+      ctx.beginPath();
+      ctx.ellipse(32, 32, 29, 29, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Pikachu's eyes
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(22, 25, 4, 6, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.ellipse(42, 25, 4, 6, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // White highlights in eyes
+      ctx.fillStyle = '#FFF';
+      ctx.beginPath();
+      ctx.ellipse(23, 22, 2, 2, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.ellipse(43, 22, 2, 2, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Pikachu's nose
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(32, 32, 2, 1, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Pikachu's mouth
+      ctx.beginPath();
+      ctx.moveTo(25, 40);
+      ctx.quadraticCurveTo(32, 45, 39, 40);
+      ctx.stroke();
+      
+      // Pikachu's cheeks
+      ctx.fillStyle = '#E60012';
+      ctx.beginPath();
+      ctx.ellipse(15, 35, 5, 4, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.ellipse(49, 35, 5, 4, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Pikachu's ears
+      ctx.fillStyle = '#FFDE00';
+      ctx.beginPath();
+      ctx.moveTo(18, 8);
+      ctx.lineTo(10, -5);
+      ctx.lineTo(26, 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(46, 8);
+      ctx.lineTo(54, -5);
+      ctx.lineTo(38, 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      
+      // Black tips on ears
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.moveTo(12, -2);
+      ctx.lineTo(10, -5);
+      ctx.lineTo(14, -3);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.moveTo(52, -2);
+      ctx.lineTo(54, -5);
+      ctx.lineTo(50, -3);
+      ctx.closePath();
+      ctx.fill();
+    }
+    
+    // Draw the Pikachu
+    drawPikachu();
+    
+    // Download the favicon
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const link = document.createElement('a');
+      link.download = 'favicon.ico';
+      link.href = canvas.toDataURL('image/x-icon');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>
