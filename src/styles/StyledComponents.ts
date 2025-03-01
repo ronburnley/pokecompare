@@ -153,6 +153,12 @@ export const CompareContainer = styled.div`
   grid-template-columns: 1fr 80px 1fr;
   gap: 16px;
   margin-top: 32px;
+  align-items: stretch;
+  
+  & > * {
+    display: flex;
+    flex-direction: column;
+  }
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

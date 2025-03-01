@@ -179,6 +179,7 @@ const Compare: React.FC = () => {
     pokemon1.stats.forEach(stat1 => {
       const stat2 = pokemon2.stats.find(s => s.stat.name === stat1.stat.name);
       if (stat2) {
+        // Mark true if pokemon1's stat is better
         statsComparison[stat1.stat.name] = stat1.base_stat > stat2.base_stat;
       }
     });
@@ -202,7 +203,7 @@ const Compare: React.FC = () => {
       </Link>
       
       <Heading>Compare Pokemon</Heading>
-      <Text>Select up to 2 Pokemon to compare their stats and abilities.</Text>
+      <Text>Select up to 2 Pokemon to compare their battle strength. We'll analyze their stats, type advantages, and overall battle potential.</Text>
       
       {selectedPokemon.length > 0 && (
         <>
@@ -221,6 +222,7 @@ const Compare: React.FC = () => {
                     pokemon={selectedPokemon[0]} 
                     showWinner={selectedPokemon.length === 2}
                     isBetter={statsComparison?.pokemon1}
+                    opponent={selectedPokemon[1]}
                   />
                 ) : (
                   <EmptySlot>
@@ -235,6 +237,7 @@ const Compare: React.FC = () => {
                     pokemon={selectedPokemon[1]} 
                     showWinner={selectedPokemon.length === 2}
                     isBetter={statsComparison?.pokemon2}
+                    opponent={selectedPokemon[0]}
                   />
                 ) : (
                   <EmptySlot>
