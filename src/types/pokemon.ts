@@ -1,4 +1,5 @@
-export interface Pokemon {
+// Create a base interface for shared properties
+interface PokemonBase {
   id: number;
   name: string;
   height: number;
@@ -29,6 +30,12 @@ export interface Pokemon {
     }
   }[];
 }
+
+export interface Pokemon extends PokemonBase {
+  mega_evolutions?: MegaEvolution[];
+}
+
+export interface MegaEvolution extends PokemonBase {}
 
 export interface PokemonListItem {
   name: string;

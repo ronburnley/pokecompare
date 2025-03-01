@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Pokemon } from '../types/pokemon';
+import { Pokemon, MegaEvolution } from '../types/pokemon';
 import { 
   Card, 
   TypeBadge, 
   Flex, 
   Text, 
   StatBar, 
-  SubHeading 
+  SubHeading,
+  Button
 } from '../styles/StyledComponents';
 
 interface PokemonDetailCardProps {
@@ -72,22 +73,110 @@ const StatItem = styled.div`
   margin-bottom: 12px;
 `;
 
+const MegaEvolutionTabsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const MegaEvolutionTab = styled.button<{ active: boolean }>`
+  padding: 8px 16px;
+  border-radius: 16px;
+  background-color: ${props => props.active ? '#3b5ca8' : '#f0f0f0'};
+  color: ${props => props.active ? 'white' : '#555'};
+  font-weight: ${props => props.active ? '600' : '400'};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  
+  &:hover {
+    background-color: ${props => props.active ? '#3b5ca8' : '#e0e0e0'};
+  }
+`;
+
+const MegaIndicator = styled.div`
+  text-align: center;
+  padding: 8px;
+  margin-top: 16px;
+  font-weight: 600;
+  color: #7038F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:before,
+  &:after {
+    content: '';
+    height: 2px;
+    width: 40px;
+    background-color: #7038F8;
+    margin: 0 12px;
+  }
+`;
+
+// Both Pokemon and MegaEvolution now extend PokemonBase, which includes all the required props
+type PokemonForm = Pokemon | MegaEvolution;
+
 const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
   pokemon,
   showWinner = false,
   isBetter = {}
 }) => {
+  const [activePokemon, setActivePokemon] = useState<PokemonForm>(pokemon);
+  const [formType, setFormType] = useState<'base' | 'mega'>('base');
+  
+  const hasMegaEvolutions = pokemon.mega_evolutions && pokemon.mega_evolutions.length > 0;
+  
+  const handleFormChange = (form: PokemonForm, type: 'base' | 'mega') => {
+    setActivePokemon(form);
+    setFormType(type);
+  };
+  
   return (
     <DetailCard>
-      <PokemonId>#{pokemon.id}</PokemonId>
+      <PokemonId>#{activePokemon.id}</PokemonId>
+      
+      {hasMegaEvolutions && (
+        <MegaEvolutionTabsContainer>
+          <MegaEvolutionTab 
+            active={formType === 'base'} 
+            onClick={() => handleFormChange(pokemon, 'base')}
+          >
+            Base Form
+          </MegaEvolutionTab>
+          
+          {pokemon.mega_evolutions?.map((mega, index) => (
+            <MegaEvolutionTab 
+              key={mega.name}
+              active={formType === 'mega' && activePokemon.name === mega.name} 
+              onClick={() => handleFormChange(mega, 'mega')}
+            >
+              {pokemon.mega_evolutions!.length > 1 
+                ? `Mega Form ${String.fromCharCode(65 + index)}` // A, B, C, etc.
+                : "Mega Form"
+              }
+            </MegaEvolutionTab>
+          ))}
+        </MegaEvolutionTabsContainer>
+      )}
+      
       <PokemonImage 
-        src={pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default} 
-        alt={pokemon.name} 
+        src={activePokemon.sprites.other['official-artwork'].front_default || activePokemon.sprites.front_default} 
+        alt={activePokemon.name} 
       />
-      <PokemonName>{pokemon.name}</PokemonName>
+      
+      <PokemonName>
+        {formType === 'base' 
+          ? activePokemon.name 
+          : activePokemon.name.split('-').slice(0, -1).join(' ')}
+      </PokemonName>
+      
+      {formType === 'mega' && <MegaIndicator>Mega Evolution</MegaIndicator>}
       
       <TypesContainer>
-        {pokemon.types.map(typeInfo => (
+        {activePokemon.types.map(typeInfo => (
           <TypeBadge 
             key={typeInfo.type.name} 
             type={typeInfo.type.name as any}
@@ -99,14 +188,14 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
       
       <SubHeading>Basic Info</SubHeading>
       <Flex justify="space-between" gap="16px">
-        <Text>Height: {pokemon.height / 10}m</Text>
-        <Text>Weight: {pokemon.weight / 10}kg</Text>
-        <Text>Base Exp: {pokemon.base_experience}</Text>
+        <Text>Height: {activePokemon.height / 10}m</Text>
+        <Text>Weight: {activePokemon.weight / 10}kg</Text>
+        <Text>Base Exp: {activePokemon.base_experience}</Text>
       </Flex>
       
       <SubHeading>Abilities</SubHeading>
       <Flex gap="8px" style={{ flexWrap: 'wrap' }}>
-        {pokemon.abilities.map(ability => (
+        {activePokemon.abilities.map(ability => (
           <Text key={ability.ability.name} style={{ textTransform: 'capitalize' }}>
             {ability.ability.name.replace('-', ' ')}
           </Text>
@@ -116,7 +205,7 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
       <StatsContainer>
         <SubHeading>Stats</SubHeading>
         
-        {pokemon.stats.map(stat => (
+        {activePokemon.stats.map(stat => (
           <StatItem key={stat.stat.name}>
             <Flex justify="space-between" align="center">
               <StatLabel highlight={showWinner && isBetter[stat.stat.name]}>

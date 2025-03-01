@@ -1,4 +1,16 @@
-# Getting Started with Create React App
+# PokéCompare
+
+A React application for comparing Pokémon stats and collecting your favorites. Built with React, TypeScript, and styled-components.
+
+## Features
+
+- Browse the Pokémon database with pagination
+- View detailed information about each Pokémon
+- Compare stats between different Pokémon
+- Save and manage your favorite Pokémon
+- Toggle between base form and Mega Evolution forms (when available)
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -174,6 +174,8 @@ const Compare: React.FC = () => {
     const [pokemon1, pokemon2] = selectedPokemon;
     const statsComparison: Record<string, boolean> = {};
     
+    // This allows for comparison even when one Pokemon is showing a mega form
+    // in the detail view, because we still have access to the base Pokemon data
     pokemon1.stats.forEach(stat1 => {
       const stat2 = pokemon2.stats.find(s => s.stat.name === stat1.stat.name);
       if (stat2) {
