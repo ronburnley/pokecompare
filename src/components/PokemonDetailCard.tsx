@@ -7,8 +7,7 @@ import {
   Flex, 
   Text, 
   StatBar, 
-  SubHeading,
-  Button
+  SubHeading
 } from '../styles/StyledComponents';
 
 interface PokemonDetailCardProps {
