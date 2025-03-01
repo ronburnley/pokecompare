@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Pokemon, MegaEvolution } from '../types/pokemon';
+import { Pokemon, MegaEvolution, GigantamaxForm } from '../types/pokemon';
 import { 
   Card, 
   TypeBadge, 
@@ -115,8 +115,28 @@ const MegaIndicator = styled.div`
   }
 `;
 
-// Both Pokemon and MegaEvolution now extend PokemonBase, which includes all the required props
-type PokemonForm = Pokemon | MegaEvolution;
+const GigantamaxIndicator = styled.div`
+  text-align: center;
+  padding: 8px;
+  margin-top: 16px;
+  font-weight: 600;
+  color: #FF5350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:before,
+  &:after {
+    content: '';
+    height: 2px;
+    width: 40px;
+    background-color: #FF5350;
+    margin: 0 12px;
+  }
+`;
+
+// All form types extend PokemonBase, which includes all the required props
+type PokemonForm = Pokemon | MegaEvolution | GigantamaxForm;
 
 const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
   pokemon,
@@ -124,11 +144,13 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
   isBetter = {}
 }) => {
   const [activePokemon, setActivePokemon] = useState<PokemonForm>(pokemon);
-  const [formType, setFormType] = useState<'base' | 'mega'>('base');
+  const [formType, setFormType] = useState<'base' | 'mega' | 'gmax'>('base');
   
   const hasMegaEvolutions = pokemon.mega_evolutions && pokemon.mega_evolutions.length > 0;
+  const hasGigantamaxForm = pokemon.gigantamax_form !== undefined;
+  const hasAlternateForms = hasMegaEvolutions || hasGigantamaxForm;
   
-  const handleFormChange = (form: PokemonForm, type: 'base' | 'mega') => {
+  const handleFormChange = (form: PokemonForm, type: 'base' | 'mega' | 'gmax') => {
     setActivePokemon(form);
     setFormType(type);
   };
@@ -137,7 +159,7 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
     <DetailCard>
       <PokemonId>#{activePokemon.id}</PokemonId>
       
-      {hasMegaEvolutions && (
+      {hasAlternateForms && (
         <MegaEvolutionTabsContainer>
           <MegaEvolutionTab 
             active={formType === 'base'} 
@@ -158,6 +180,15 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
               }
             </MegaEvolutionTab>
           ))}
+          
+          {pokemon.gigantamax_form && (
+            <MegaEvolutionTab
+              active={formType === 'gmax'}
+              onClick={() => handleFormChange(pokemon.gigantamax_form!, 'gmax')}
+            >
+              Gigantamax
+            </MegaEvolutionTab>
+          )}
         </MegaEvolutionTabsContainer>
       )}
       
@@ -173,6 +204,7 @@ const PokemonDetailCard: React.FC<PokemonDetailCardProps> = ({
       </PokemonName>
       
       {formType === 'mega' && <MegaIndicator>Mega Evolution</MegaIndicator>}
+      {formType === 'gmax' && <GigantamaxIndicator>Gigantamax Form</GigantamaxIndicator>}
       
       <TypesContainer>
         {activePokemon.types.map(typeInfo => (

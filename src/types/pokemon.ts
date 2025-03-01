@@ -33,9 +33,12 @@ interface PokemonBase {
 
 export interface Pokemon extends PokemonBase {
   mega_evolutions?: MegaEvolution[];
+  gigantamax_form?: GigantamaxForm;
 }
 
 export interface MegaEvolution extends PokemonBase {}
+
+export interface GigantamaxForm extends PokemonBase {}
 
 export interface PokemonListItem {
   name: string;

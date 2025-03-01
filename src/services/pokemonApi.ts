@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Pokemon, PokemonListResponse, MegaEvolution } from '../types/pokemon';
+import { Pokemon, PokemonListResponse, MegaEvolution, GigantamaxForm } from '../types/pokemon';
 
 const API_URL = 'https://pokeapi.co/api/v2';
 
@@ -43,6 +43,40 @@ const megaEvolutionMap: Record<number, string[]> = {
   719: ['diancie-mega'], // Diancie
 };
 
+// Mapping of Pokémon IDs to their Gigantamax form names
+const gigantamaxMap: Record<number, string> = {
+  3: 'venusaur-gmax', // Venusaur
+  6: 'charizard-gmax', // Charizard
+  9: 'blastoise-gmax', // Blastoise
+  12: 'butterfree-gmax', // Butterfree
+  25: 'pikachu-gmax', // Pikachu
+  52: 'meowth-gmax', // Meowth
+  68: 'machamp-gmax', // Machamp
+  94: 'gengar-gmax', // Gengar
+  99: 'kingler-gmax', // Kingler
+  131: 'lapras-gmax', // Lapras
+  133: 'eevee-gmax', // Eevee
+  143: 'snorlax-gmax', // Snorlax
+  569: 'garbodor-gmax', // Garbodor
+  809: 'melmetal-gmax', // Melmetal
+  823: 'corviknight-gmax', // Corviknight
+  826: 'orbeetle-gmax', // Orbeetle
+  834: 'drednaw-gmax', // Drednaw
+  839: 'coalossal-gmax', // Coalossal
+  841: 'flapple-gmax', // Flapple
+  842: 'appletun-gmax', // Appletun
+  844: 'sandaconda-gmax', // Sandaconda
+  849: 'toxtricity-amped-gmax', // Toxtricity Amped
+  851: 'centiskorch-gmax', // Centiskorch
+  858: 'hatterene-gmax', // Hatterene
+  861: 'grimmsnarl-gmax', // Grimmsnarl
+  869: 'alcremie-gmax', // Alcremie
+  879: 'copperajah-gmax', // Copperajah
+  884: 'duraludon-gmax', // Duraludon
+  892: 'urshifu-single-strike-gmax', // Urshifu Single Strike
+  893: 'urshifu-rapid-strike-gmax', // Urshifu Rapid Strike
+};
+
 export const fetchPokemonList = async (limit = 20, offset = 0): Promise<PokemonListResponse> => {
   const response = await axios.get(`${API_URL}/pokemon?limit=${limit}&offset=${offset}`);
   return response.data;
@@ -52,9 +86,11 @@ export const fetchPokemon = async (nameOrId: string | number): Promise<Pokemon> 
   const response = await axios.get(`${API_URL}/pokemon/${nameOrId}`);
   const pokemon = response.data;
   
-  // If this Pokémon has mega evolutions, fetch them
+  // Process ID-based lookups for Mega and Gigantamax forms
   if (typeof nameOrId === 'number' || !isNaN(parseInt(nameOrId as string))) {
     const id = typeof nameOrId === 'number' ? nameOrId : parseInt(nameOrId as string);
+    
+    // If this Pokémon has mega evolutions, fetch them
     const megaForms = megaEvolutionMap[id] || [];
     
     if (megaForms.length > 0) {
@@ -72,6 +108,18 @@ export const fetchPokemon = async (nameOrId: string | number): Promise<Pokemon> 
       
       // Filter out any failed requests
       pokemon.mega_evolutions = megaEvolutions.filter(Boolean);
+    }
+    
+    // If this Pokémon has a Gigantamax form, fetch it
+    const gigantamaxForm = gigantamaxMap[id];
+    
+    if (gigantamaxForm) {
+      try {
+        const gmaxResponse = await axios.get(`${API_URL}/pokemon/${gigantamaxForm}`);
+        pokemon.gigantamax_form = gmaxResponse.data as GigantamaxForm;
+      } catch (error) {
+        console.error(`Failed to fetch Gigantamax form ${gigantamaxForm}:`, error);
+      }
     }
   }
   
